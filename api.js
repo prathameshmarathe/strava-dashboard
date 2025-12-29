@@ -39,7 +39,8 @@ export async function exchangeToken(code) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             code: code,
-            grant_type: 'authorization_code'
+            grant_type: 'authorization_code',
+            redirect_uri: CONFIG.REDIRECT_URI
         })
     });
     return await response.json();
