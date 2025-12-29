@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strava // Year in Review</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <div class="bg-animation">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+    <div id="app">
+        <!-- Landing Section -->
+        <section id="landing" class="view">
+            <div class="glass-card main-hero">
+                <h1>Your Year in <span class="highlight">Motion</span></h1>
+                <p>Relive your 2025 Strava journey with interactive data stories.</p>
+
+                <div class="auth-box">
+                    <div class="button-group">
+                        <button id="connect-btn" class="primary-btn">
+                            <i data-lucide="activity"></i>
+                            Connect with Strava
+                        </button>
+                        <button id="demo-btn" class="secondary-btn">
+                            Try Demo
+                        </button>
+                    </div>
+                    <p class="disclaimer">Your data is processed locally and never stored.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Loading Section -->
+        <section id="loading" class="view">
+            <div class="loader-container">
+                <div class="spinner"></div>
+                <h2>Analyzing your year...</h2>
+                <p id="loading-status">Connecting to Strava...</p>
+            </div>
+        </section>
+
+        <!-- Story Mode Section -->
+        <section id="story-view" class="view">
+            <div class="story-progress">
+                <!-- Progress bars injected by JS -->
+            </div>
+
+            <div id="story-container" class="story-container">
+                <!-- Slides injected by JS -->
+            </div>
+
+            <div class="story-nav-overlay">
+                <div class="nav-hitbox prev" onclick="prevSlide()"></div>
+                <div class="nav-hitbox next" onclick="nextSlide()"></div>
+            </div>
+
+            <button id="skip-story" class="secondary-btn-sm skip-btn">Skip to Stats</button>
+        </section>
+
+        <!-- Dashboard Section (Final Recap) -->
+        <section id="dashboard" class="view">
+            <nav class="top-nav">
+                <div class="logo">STRΛVΛ <span class="review-tag">2025</span></div>
+                <div class="nav-actions">
+                    <button id="share-btn" class="primary-btn-sm">
+                        <i data-lucide="share-2"></i>
+                        Share Achievement
+                    </button>
+                    <button id="logout-btn" class="secondary-btn-sm">Disconnect</button>
+                </div>
+            </nav>
+
+            <main class="dashboard-grid">
+                <!-- Summary Card -->
+                <div class="glass-card stat-card fade-in">
+                    <i data-lucide="map-pin"></i>
+                    <div class="metric-container">
+                        <span class="label">Total Distance</span>
+                        <span class="value" id="total-distance">0 <span class="unit"
+                                style="font-size:0.6em">km</span></span>
+                        <p class="insight" id="dist-insight"></p>
+                    </div>
+                </div>
+
+                <!-- Activity Count -->
+                <div class="glass-card stat-card fade-in" style="animation-delay: 0.1s;">
+                    <i data-lucide="run"></i>
+                    <div class="metric-container">
+                        <span class="label">Total Activities</span>
+                        <span class="value" id="total-activities">0</span>
+                        <p class="insight" id="count-insight"></p>
+                    </div>
+                </div>
+
+                <!-- Kudos -->
+                <div class="glass-card stat-card fade-in" style="animation-delay: 0.2s;">
+                    <i data-lucide="thumbs-up"></i>
+                    <div class="metric-container">
+                        <span class="label">Total Kudos</span>
+                        <span class="value" id="total-kudos">0</span>
+                        <p class="insight" id="kudos-insight"></p>
+                    </div>
+                </div>
+
+                <!-- Elevation -->
+                <div class="glass-card stat-card fade-in" style="animation-delay: 0.3s;">
+                    <i data-lucide="mountain"></i>
+                    <div class="metric-container">
+                        <span class="label">Total Elevation</span>
+                        <span class="value" id="total-elevation">0 <span class="unit">m</span></span>
+                        <p class="insight" id="elev-insight"></p>
+                    </div>
+                </div>
+
+                <!-- Monthly Recap Grid -->
+                <div class="glass-card wide-card fade-in" style="animation-delay: 0.4s;">
+                    <h3>Monthly Storyboard</h3>
+                    <div id="monthly-grid" class="monthly-grid">
+                        <!-- Monthly cards will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Active Day Map -->
+                <div class="glass-card half-card fade-in" style="animation-delay: 0.5s;">
+                    <h3>Weekly Rhythm</h3>
+                    <div class="chart-container-sm">
+                        <canvas id="weekly-chart"></canvas>
+                    </div>
+                    <p class="insight" id="weekly-insight"
+                        style="text-align: center; margin-top: 1.5rem; font-size: 1.2rem;"></p>
+                </div>
+
+                <!-- Achievements / Fun Stats -->
+                <div class="glass-card half-card fade-in" style="animation-delay: 0.6s;">
+                    <h3>Yearly Highlights</h3>
+                    <div class="highlights-grid">
+                        <div class="highlight-item">
+                            <span class="h-label">Most Active Month</span>
+                            <span class="h-value" id="most-active-month">-</span>
+                        </div>
+                        <div class="highlight-item">
+                            <span class="h-label">Total Moving Time</span>
+                            <span class="h-value" id="total-time">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personal Bests -->
+                <div class="glass-card wide-card fade-in" style="animation-delay: 0.7s;">
+                    <h3>Personal Bests '25</h3>
+                    <ul id="pb-list" class="pb-list">
+                        <!-- PBs will be injected here -->
+                    </ul>
+                </div>
+            </main>
+        </section>
+
+        <!-- Share Modal -->
+        <div id="share-modal" class="modal">
+            <div class="modal-content glass-card">
+                <button class="close-modal">&times;</button>
+                <h3>Your 2025 Snapshot</h3>
+                <div id="share-card-preview" class="share-card-preview">
+                    <!-- Achievement card content will be rendered here -->
+                </div>
+                <div class="modal-footer">
+                    <button id="download-share-btn" class="primary-btn">
+                        <i data-lucide="download"></i>
+                        Download Image
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="app.js" type="module"></script>
+</body>
+
+</html>
