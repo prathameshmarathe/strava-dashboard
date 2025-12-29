@@ -3,7 +3,7 @@ export default async function handler(req, res) {
         return res.status(405).json({ message: 'Method not allowed' });
     }
 
-    const { code, refresh_token, grant_type } = req.body;
+    const { code, refresh_token, grant_type, redirect_uri } = req.body;
 
     const clientId = process.env.STRAVA_CLIENT_ID;
     const clientSecret = process.env.STRAVA_CLIENT_SECRET;
@@ -21,6 +21,7 @@ export default async function handler(req, res) {
 
         if (grant_type === 'authorization_code') {
             payload.code = code;
+            payload.redirect_uri = redirect_uri;
         } else if (grant_type === 'refresh_token') {
             payload.refresh_token = refresh_token;
         }
