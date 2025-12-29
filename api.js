@@ -34,26 +34,46 @@ export async function fetchActivities(accessToken, startOfYear, endOfYear, onPro
 }
 
 export async function exchangeToken(code) {
+    const isLocalToken = CONFIG.TOKEN_URL.startsWith('http');
+    const body = {
+        code: code,
+        grant_type: 'authorization_code',
+        redirect_uri: CONFIG.REDIRECT_URI
+    };
+
+    if (CONFIG.CLIENT_SECRET) {
+        body.client_id = CONFIG.CLIENT_ID;
+        body.client_secret = CONFIG.CLIENT_SECRET;
+    }
+
     const response = await fetch(CONFIG.TOKEN_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            code: code,
-            grant_type: 'authorization_code',
-            redirect_uri: CONFIG.REDIRECT_URI
-        })
+        headers: {
+            'Content-Type': isLocalToken ? 'application/x-www-form-urlencoded' : 'application/json'
+        },
+        body: isLocalToken ? new URLSearchParams(body) : JSON.stringify(body)
     });
     return await response.json();
 }
 
 export async function refreshToken(token) {
+    const isLocalToken = CONFIG.TOKEN_URL.startsWith('http');
+    const body = {
+        refresh_token: token,
+        grant_type: 'refresh_token'
+    };
+
+    if (CONFIG.CLIENT_SECRET) {
+        body.client_id = CONFIG.CLIENT_ID;
+        body.client_secret = CONFIG.CLIENT_SECRET;
+    }
+
     const response = await fetch(CONFIG.TOKEN_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            refresh_token: token,
-            grant_type: 'refresh_token'
-        })
+        headers: {
+            'Content-Type': isLocalToken ? 'application/x-www-form-urlencoded' : 'application/json'
+        },
+        body: isLocalToken ? new URLSearchParams(body) : JSON.stringify(body)
     });
     return await response.json();
 }
