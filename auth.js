@@ -35,7 +35,7 @@ export async function handleCallback(code) {
     if (data.access_token) {
         Session.save(data);
         window.history.replaceState({}, document.title, window.location.pathname);
-        return data;
+        return Session.get(); // Return unified object
     }
     throw new Error(data.message || 'Token exchange failed');
 }
@@ -44,7 +44,7 @@ export async function refreshSession(refreshToken) {
     const data = await API.refreshToken(refreshToken);
     if (data.access_token) {
         Session.save(data);
-        return data;
+        return Session.get(); // Return unified object
     }
     throw new Error('Refresh failed');
 }
